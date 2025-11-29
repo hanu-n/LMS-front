@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-   baseURL: "https://lms-vx2w.onrender.com"
+   baseURL: "https://lms-vx2w.onrender.com/api"
  ,
   
 });
@@ -13,9 +13,6 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   } else {
-    // helpful debug when requests are failing due to missing token
-    // (comment out in production if noisy)
-    // console.debug('axiosInstance: no auth token found in localStorage');
   }
   return config;
 });
