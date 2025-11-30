@@ -25,6 +25,7 @@ import Contact from "./pages/Home/Contact.jsx";
 import EventsPage from "./pages/Home/EventsPage.jsx";
 import Profile from "./pages/Home/Profile.jsx";
 import Schedule from "./pages/Home/Schedule.jsx";
+import NotFoundPage from "./pages/Home/NotFoundPage.jsx";
 const App = () => {
   return (
        <SnackbarProvider maxSnack={3}>
@@ -49,8 +50,7 @@ const App = () => {
         <Route path="/student-profile" element={<StudentProfile />}/>
         <Route path="/profile" element={<Profile />}/>
         <Route path="/schedule" element={<Schedule />}/>
-        {/* Redirect root to login */}
-        <Route path="*" element={<Login />} />
+        <Route path="*" element={<NotFoundPage />}/>
       </Routes>
       
       <AppFooter/>

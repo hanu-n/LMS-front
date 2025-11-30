@@ -9,7 +9,9 @@ import {
   Button,
   Space,
   Avatar,
-  Statistic
+  Statistic,
+  Drawer,
+  Grid,
 } from "antd";
 import { 
   TeamOutlined, 
@@ -21,7 +23,9 @@ import {
   ArrowRightOutlined,
   RocketOutlined,
   DashboardOutlined,
-  CrownOutlined
+  CrownOutlined,
+  MenuOutlined,
+  CloseOutlined // Add this import
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -30,7 +34,9 @@ const { Title, Text } = Typography;
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [mobileMenuVisible, setMobileMenuVisible] = React.useState(false);
   const user = JSON.parse(localStorage.getItem("sms-user")) || {};
+  const screens = Grid.useBreakpoint();
   
   const menuItems = [
     { key: "dashboard", label: "Dashboard", icon: <DashboardOutlined />, onClick: () => navigate("/dashboard") },
@@ -110,7 +116,11 @@ const Dashboard = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", background: 'linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%)' }}>
+      {/* Desktop Sidebar - Hidden on mobile */}
       <Sider 
+        breakpoint="lg"
+        collapsedWidth="0"
+        trigger={null}
         style={{ 
           background: 'linear-gradient(135deg, #1C2951 0%, #0f1a3a 100%)',
           boxShadow: '4px 0 20px rgba(28, 41, 81, 0.1)'
@@ -139,37 +149,46 @@ const Dashboard = () => {
       <Layout>
         <Header style={{ 
           background: "#fff", 
-          padding: "0 32px", 
+          padding: "0 16px", 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
           boxShadow: '0 2px 12px rgba(28, 41, 81, 0.08)', 
-          borderBottom: '1px solid #f0f0f0' ,
-          marginTop:'20px'
+          borderBottom: '1px solid #f0f0f0',
+          height: '70px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Mobile Menu Button - visible on small screens */}
+            {!screens.lg && (
+              <Button
+                type="text"
+                icon={mobileMenuVisible ? <CloseOutlined /> : <MenuOutlined />}
+                onClick={() => setMobileMenuVisible(!mobileMenuVisible)}
+              />
+            )}
+            
             <div style={{
-              width: '48px',
-              height: '48px',
+              width: '40px',
+              height: '40px',
               background: 'linear-gradient(135deg, #C1272D 0%, #1C2951 100%)',
-              borderRadius: '12px',
+              borderRadius: '10px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
-              fontSize: '20px'
+              fontSize: '16px'
             }}>
               <CrownOutlined />
             </div>
             <div>
-              <Title level={3} style={{ color: "#1C2951", margin: 0, fontWeight: 700 }}>Admin Dashboard</Title>
-              <Text style={{ color: '#1C2951', opacity: 0.7 }}>Welcome back, {user.name || 'Admin'}! 👋</Text>
+              <Title level={4} style={{ color: "#1C2951", margin: 0, fontWeight: 700, fontSize: '18px' }}>Admin Dashboard</Title>
+              <Text style={{ color: '#1C2951', opacity: 0.7, fontSize: '14px' }}>Welcome back, {user.name || 'Admin'}! 👋</Text>
             </div>
           </div>
           
           <Space>
             <Avatar 
-              size="large"
+              size="default"
               style={{ 
                 background: 'linear-gradient(135deg, #C1272D 0%, #1C2951 100%)',
                 cursor: 'pointer'
@@ -181,12 +200,62 @@ const Dashboard = () => {
           </Space>
         </Header>
 
-        <Content style={{ margin: "32px", background: 'transparent' }}>
+        {/* Mobile Menu Drawer */}
+        <Drawer
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span>Menu</span>
+              <Button 
+                type="text" 
+                icon={<CloseOutlined />} 
+                onClick={() => setMobileMenuVisible(false)}
+                style={{ color: '#1C2951' }}
+              />
+            </div>
+          }
+          placement="left"
+          onClose={() => setMobileMenuVisible(false)}
+          open={mobileMenuVisible}
+          width={280}
+          closable={false}
+          styles={{
+            body: { 
+              padding: 0,
+              background: 'linear-gradient(135deg, #1C2951 0%, #0f1a3a 100%)'
+            },
+            header: {
+              background: 'white',
+              borderBottom: '1px solid #f0f0f0'
+            }
+          }}
+        >
+          <div style={{
+            color: "white", 
+            padding: "1.5rem 1rem", 
+            textAlign: "center", 
+            fontWeight: "bold",
+            fontSize: "18px", 
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.05)'
+          }}>
+            🎓 Cordova Academy
+          </div>
+          <Menu 
+            theme="dark" 
+            mode="inline" 
+            defaultSelectedKeys={["dashboard"]} 
+            items={menuItems}
+            style={{ background: 'transparent', padding: '8px', marginTop: '16px' }}
+            onClick={() => setMobileMenuVisible(false)}
+          />
+        </Drawer>
+
+        <Content style={{ margin: "16px", background: 'transparent' }}>
           {/* Welcome Section */}
           <Card 
             style={{ 
-              marginBottom: '32px',
-              borderRadius: '20px',
+              marginBottom: '24px',
+              borderRadius: '16px',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: 'white',
               border: 'none',
@@ -195,47 +264,49 @@ const Dashboard = () => {
               position: 'relative'
             }}
           >
-            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }}></div>
-            <div style={{ position: 'absolute', bottom: '-30px', left: '-30px', width: '150px', height: '150px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}></div>
+            <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '120px', height: '120px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }}></div>
+            <div style={{ position: 'absolute', bottom: '-20px', left: '-20px', width: '80px', height: '80px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}></div>
             
             <div style={{ position: 'relative', zIndex: 2 }}>
-              <Row gutter={[24, 24]} align="middle">
+              <Row gutter={[16, 16]} align="middle">
                 <Col xs={24} md={16}>
-                  <Title level={2} style={{ color: 'white', marginBottom: '16px' }}>
+                  <Title level={3} style={{ color: 'white', marginBottom: '12px', fontSize: '20px' }}>
                     Welcome to Cordova Academy Admin Panel
                   </Title>
-                  <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: '16px', lineHeight: 1.6 }}>
+                  <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', lineHeight: 1.6, display: 'block' }}>
                     Manage your school efficiently with our comprehensive admin tools. 
                     Everything you need to run your institution is right here.
                   </Text>
-                  <div style={{ marginTop: '24px' }}>
-                    <Space>
+                  <div style={{ marginTop: '16px' }}>
+                    <Space direction="vertical" style={{ width: '100%' }} size="middle">
                       <Button 
                         onClick={() => window.open('https://ha9nan.netlify.app/', '_blank', 'noopener,noreferrer')}
                         type="primary" 
-                        size="large"
+                        size="middle"
                         style={{ 
                           background: 'rgba(255,255,255,0.2)', 
                           borderColor: 'rgba(255,255,255,0.3)',
-                          borderRadius: '25px',
-                          height: '48px',
+                          borderRadius: '20px',
+                          height: '40px',
                           fontWeight: 600,
-                          backdropFilter: 'blur(10px)'
+                          backdropFilter: 'blur(10px)',
+                          width: '100%'
                         }}
                         icon={<RocketOutlined />}
                       >
                         Quick Tour
                       </Button>
                       <Button 
-                      onClick={() => window.open('https://ha9nan.netlify.app/', '_blank', 'noopener,noreferrer')}
-                        size="large"
+                        onClick={() => window.open('https://ha9nan.netlify.app/', '_blank', 'noopener,noreferrer')}
+                        size="middle"
                         style={{ 
                           background: 'white', 
                           color: '#764ba2',
                           border: 'none',
-                          borderRadius: '25px',
-                          height: '48px',
-                          fontWeight: 600
+                          borderRadius: '20px',
+                          height: '40px',
+                          fontWeight: 600,
+                          width: '100%'
                         }}
                         icon={<ArrowRightOutlined />}
                       >
@@ -246,7 +317,7 @@ const Dashboard = () => {
                 </Col>
                 <Col xs={24} md={8}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '80px' }}>🎯</div>
+                    <div style={{ fontSize: '60px' }}>🎯</div>
                   </div>
                 </Col>
               </Row>
@@ -254,12 +325,12 @@ const Dashboard = () => {
           </Card>
 
           {/* Quick Stats */}
-          <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
+          <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
             {quickStats.map((stat, index) => (
               <Col xs={24} sm={12} lg={6} key={index}>
                 <Card 
                   style={{ 
-                    borderRadius: '16px',
+                    borderRadius: '12px',
                     border: '1px solid rgba(28, 41, 81, 0.1)',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                     cursor: 'pointer',
@@ -271,30 +342,30 @@ const Dashboard = () => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                      <Text style={{ color: '#1C2951', opacity: 0.8, fontSize: '14px', fontWeight: 500 }}>
+                      <Text style={{ color: '#1C2951', opacity: 0.8, fontSize: '13px', fontWeight: 500 }}>
                         {stat.title}
                       </Text>
-                      <div style={{ marginTop: '8px' }}>
+                      <div style={{ marginTop: '6px' }}>
                         <Statistic
                           value={stat.value}
                           suffix={stat.suffix}
-                          valueStyle={{ color: stat.color, fontSize: '28px', fontWeight: 700 }}
+                          valueStyle={{ color: stat.color, fontSize: '22px', fontWeight: 700 }}
                         />
                       </div>
-                      <Text style={{ color: '#1C2951', opacity: 0.6, fontSize: '12px' }}>
+                      <Text style={{ color: '#1C2951', opacity: 0.6, fontSize: '11px' }}>
                         {stat.description}
                       </Text>
                     </div>
                     <div style={{
-                      width: '50px',
-                      height: '50px',
+                      width: '40px',
+                      height: '40px',
                       background: `${stat.color}15`,
-                      borderRadius: '12px',
+                      borderRadius: '10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: stat.color,
-                      fontSize: '20px'
+                      fontSize: '16px'
                     }}>
                       {stat.icon}
                     </div>
@@ -305,27 +376,27 @@ const Dashboard = () => {
           </Row>
 
           {/* Quick Actions */}
-          <Row gutter={[24, 24]}>
+          <Row gutter={[16, 16]}>
             <Col xs={24}>
               <Card 
                 title={
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <RocketOutlined style={{ color: '#1C2951', fontSize: '18px' }} />
-                    <span style={{ color: '#1C2951', fontWeight: 600, fontSize: '18px' }}>Quick Actions</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <RocketOutlined style={{ color: '#1C2951', fontSize: '16px' }} />
+                    <span style={{ color: '#1C2951', fontWeight: 600, fontSize: '16px' }}>Quick Actions</span>
                   </div>
                 }
                 style={{ 
-                  borderRadius: '16px',
+                  borderRadius: '12px',
                   border: '1px solid rgba(28, 41, 81, 0.1)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
                 }}
               >
-                <Row gutter={[24, 24]}>
+                <Row gutter={[16, 16]}>
                   {quickActions.map((action, index) => (
                     <Col xs={24} sm={12} lg={6} key={index}>
                       <Card 
                         style={{ 
-                          borderRadius: '12px',
+                          borderRadius: '10px',
                           border: `2px solid ${action.color}20`,
                           background: `${action.color}05`,
                           cursor: 'pointer',
@@ -335,14 +406,14 @@ const Dashboard = () => {
                         hoverable
                         onClick={action.action}
                       >
-                        <div style={{ textAlign: 'center', padding: '16px' }}>
-                          <div style={{ fontSize: '40px', marginBottom: '12px' }}>
+                        <div style={{ textAlign: 'center', padding: '12px' }}>
+                          <div style={{ fontSize: '32px', marginBottom: '8px' }}>
                             {action.icon}
                           </div>
-                          <Title level={5} style={{ color: action.color, marginBottom: '8px' }}>
+                          <Title level={5} style={{ color: action.color, marginBottom: '6px', fontSize: '14px' }}>
                             {action.title}
                           </Title>
-                          <Text style={{ color: '#1C2951', opacity: 0.7, fontSize: '13px' }}>
+                          <Text style={{ color: '#1C2951', opacity: 0.7, fontSize: '12px' }}>
                             {action.description}
                           </Text>
                         </div>
@@ -355,21 +426,21 @@ const Dashboard = () => {
           </Row>
 
           {/* System Status */}
-          <Row gutter={[24, 24]} style={{ marginTop: '32px' }}>
+          <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
             <Col xs={24}>
               <Card 
                 style={{ 
-                  borderRadius: '16px',
+                  borderRadius: '12px',
                   border: '1px solid rgba(28, 41, 81, 0.1)',
                   background: 'linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%)'
                 }}
               >
-                <div style={{ textAlign: 'center', padding: '20px' }}>
-                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
-                  <Title level={4} style={{ color: '#1C2951', marginBottom: '8px' }}>
+                <div style={{ textAlign: 'center', padding: '16px' }}>
+                  <div style={{ fontSize: '36px', marginBottom: '12px' }}>✅</div>
+                  <Title level={5} style={{ color: '#1C2951', marginBottom: '6px', fontSize: '16px' }}>
                     System Running Smoothly
                   </Title>
-                  <Text style={{ color: '#1C2951', opacity: 0.7 }}>
+                  <Text style={{ color: '#1C2951', opacity: 0.7, fontSize: '14px' }}>
                     All systems operational. No issues reported.
                   </Text>
                 </div>

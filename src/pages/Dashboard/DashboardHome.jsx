@@ -7,7 +7,8 @@ import {
   Button,
   Space,
   List,
-  Avatar
+  Avatar,
+  Grid,
 } from "antd";
 import {
   CalendarOutlined,
@@ -16,15 +17,18 @@ import {
   TeamOutlined,
   ArrowRightOutlined,
   UserOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
+  MenuOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-const DashboardHome = () => {
+const DashboardHome = ({ onMenuToggle, isSidebarCollapsed }) => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("sms-user")) || {};
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
 
   const quickActions = [
     {
@@ -52,23 +56,27 @@ const DashboardHome = () => {
 
   return (
     <div style={{
-      padding: "32px",
+      padding: "16px",
       background: "linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%)",
-      minHeight: "100vh",
+      minHeight: "100vh"
     }}>
       {/* Welcome Header */}
-      <div style={{ marginBottom: '48px' }}>
-        <Row gutter={[24, 24]} align="middle">
+      <div style={{ marginBottom: '32px' }}>
+        <Row gutter={[16, 16]} align="middle">
           <Col xs={24} md={12}>
-            <Title level={1} style={{ color: '#1C2951', marginBottom: '8px' }}>
-             Hello, {user.name || 'Teacher'}!
-            </Title>
-            <Text style={{ color: '#1C2951', opacity: 0.7, fontSize: '18px' }}>
-              Welcome to your teaching dashboard
-            </Text>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div>
+                <Title level={2} style={{ color: '#1C2951', marginBottom: '8px', margin: 0 }}>
+                  Hello, {user.name || 'Teacher'}!
+                </Title>
+                <Text style={{ color: '#1C2951', opacity: 0.7, fontSize: '16px' }}>
+                  Welcome to your teaching dashboard
+                </Text>
+              </div>
+            </div>
           </Col>
           <Col xs={24} md={12}>
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ textAlign: screens.md ? 'right' : 'left' }}>
               <Button 
                 type="primary" 
                 size="large"
@@ -77,8 +85,9 @@ const DashboardHome = () => {
                   borderColor: '#1C2951',
                   borderRadius: '25px',
                   fontWeight: 600,
-                  padding: '0 30px',
-                  height: '50px'
+                  padding: '0 20px',
+                  height: '45px',
+                  width: screens.md ? 'auto' : '100%'
                 }}
                 icon={<CalendarOutlined />}
                 onClick={() => navigate('/schedule')}
@@ -91,9 +100,9 @@ const DashboardHome = () => {
       </div>
 
       {/* Quick Actions */}
-      <Row gutter={[24, 24]} style={{ marginBottom: '40px' }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: '32px' }}>
         <Col xs={24}>
-          <Title level={3} style={{ color: '#1C2951', marginBottom: '24px' }}>
+          <Title level={3} style={{ color: '#1C2951', marginBottom: '16px' }}>
             Quick Actions
           </Title>
         </Col>
@@ -111,7 +120,7 @@ const DashboardHome = () => {
               hoverable
               onClick={action.action}
             >
-              <div style={{ textAlign: 'center', padding: '24px 16px' }}>
+              <div style={{ textAlign: 'center', padding: '20px 16px' }}>
                 <div style={{ 
                   fontSize: '48px', 
                   marginBottom: '16px',
@@ -131,10 +140,8 @@ const DashboardHome = () => {
         ))}
       </Row>
 
-     
-
       {/* Teaching Resources */}
-      <Row gutter={[24, 24]} style={{ marginTop: '32px' }}>
+      <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
         <Col xs={24}>
           <Card 
             style={{ 
@@ -143,7 +150,7 @@ const DashboardHome = () => {
               background: 'linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%)'
             }}
           >
-            <Row gutter={[24, 24]} align="middle">
+            <Row gutter={[16, 16]} align="middle">
               <Col xs={24} md={16}>
                 <Title level={4} style={{ color: '#1C2951', marginBottom: '8px' }}>
                   Teaching Resources
@@ -153,7 +160,7 @@ const DashboardHome = () => {
                 </Text>
               </Col>
               <Col xs={24} md={8}>
-                <div style={{ textAlign: 'right' }}>
+                <div style={{ textAlign: screens.md ? 'right' : 'left' }}>
                   <Button 
                     size="large"
                     style={{ 
@@ -162,8 +169,9 @@ const DashboardHome = () => {
                       color: 'white',
                       borderRadius: '25px',
                       fontWeight: 600,
-                      padding: '0 24px',
-                      height: '45px'
+                      padding: '0 20px',
+                      height: '45px',
+                      width: screens.md ? 'auto' : '100%'
                     }}
                     icon={<BookOutlined />}
                     onClick={() => navigate('/resources')}

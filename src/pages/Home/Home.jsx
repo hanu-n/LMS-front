@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Button, Typography, Row, Col, Card, Space, Divider, Dropdown, Menu } from 'antd';
-import { UserOutlined, ArrowRightOutlined, PlayCircleOutlined, DownOutlined, DashboardOutlined, ProfileOutlined, LogoutOutlined, DeleteOutlined, DollarOutlined } from '@ant-design/icons';
+import { Layout, Button, Typography, Row, Col, Card, Space, Divider, Dropdown, Menu, Drawer, Grid } from 'antd';
+import { UserOutlined, ArrowRightOutlined, PlayCircleOutlined, DownOutlined, DashboardOutlined, ProfileOutlined, LogoutOutlined, DeleteOutlined, DollarOutlined, MenuOutlined } from '@ant-design/icons';
 import logo from '../../assets/images/logo.png'; 
 import { useNavigate } from 'react-router-dom';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const screens = useBreakpoint();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const user = JSON.parse(localStorage.getItem("sms-user")) || null;
+
+  const isMobile = !screens.md;
+  const isTablet = !screens.lg && screens.md;
 
   const menuItemStyle = {
     fontSize: 15,
@@ -25,7 +31,7 @@ const HomePage = () => {
     window.location.reload();
   };
 
-  // Role-based menu generator - ONLY THIS PART IS CHANGED
+  // Role-based menu generator - EXACTLY THE SAME
   const getUserMenu = () => {
     const userMenu = (
       <div
@@ -37,7 +43,7 @@ const HomePage = () => {
           boxShadow: "0 8px 25px rgba(0,0,0,0.12)"
         }}
       >
-        {/* Top User Info - EXACTLY AS BEFORE */}
+        {/* Top User Info */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: 15 }}>
           <div
             style={{
@@ -65,7 +71,6 @@ const HomePage = () => {
             <p style={{ margin: 0, fontSize: 13, color: "#666" }}>
               {user?.email}
             </p>
-            {/* Added role display */}
             <p style={{ margin: "5px 0 0 0", fontSize: 12, color: "#C1272D", fontWeight: 600 }}>
               {user?.role?.toUpperCase() || "USER"}
             </p>
@@ -74,20 +79,15 @@ const HomePage = () => {
 
         <div style={{ borderBottom: "1px solid #f0f0f0", marginBottom: 15 }} />
 
-        {/* Menu Items - CHANGED TO ROLE-BASED */}
+        {/* Menu Items */}
         <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-          {/* Profile - Common for all roles */}
-<div 
-  style={menuItemStyle}
-  onClick={() => {
-    // All roles go to the same profile page
-    navigate('/profile');
-  }}
->
-  👤 My Profile
-</div>
+          <div 
+            style={menuItemStyle}
+            onClick={() => navigate('/profile')}
+          >
+            👤 My Profile
+          </div>
 
-          {/* Role-specific items */}
           {user?.role === 'student' && (
             <div 
               style={menuItemStyle}
@@ -118,7 +118,7 @@ const HomePage = () => {
 
         <div style={{ borderBottom: "1px solid #f0f0f0", margin: "15px 0" }} />
 
-        {/* Logout - Common for all */}
+        {/* Logout */}
         <div
           style={{ ...menuItemStyle, fontWeight: 600 }}
           onClick={handleLogout}
@@ -126,7 +126,6 @@ const HomePage = () => {
           ↪️ Logout
         </div>
 
-        {/* Delete Account - Common for all */}
         <div
           style={{
             ...menuItemStyle,
@@ -142,7 +141,33 @@ const HomePage = () => {
     return userMenu;
   };
 
-  // ALL YOUR EXISTING CODE BELOW REMAINS EXACTLY THE SAME
+  // Mobile menu component
+  const MobileMenu = () => (
+    <div style={{ padding: '20px 0' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <Dropdown overlay={studentMenu} placement="bottomLeft" trigger={["click"]}>
+          <Text style={{ color: "#1C2951", cursor: "pointer", fontWeight: 600, fontSize: "16px" }}>
+            View Student Info <DownOutlined style={{ fontSize: 12 }} />
+          </Text>
+        </Dropdown>
+
+        <Text strong style={{ color: "#1C2951", cursor: "pointer", fontSize: "16px" }} onClick={() => navigate("/")}>
+          Home
+        </Text>
+
+        <Text style={{ color: "#1C2951", cursor: "pointer", opacity: 0.8, fontSize: "16px" }}>
+          About
+        </Text>
+        <Text style={{ color: "#1C2951", cursor: "pointer", opacity: 0.8, fontSize: "16px" }}>
+          Event
+        </Text>
+        <Text style={{ color: "#1C2951", cursor: "pointer", opacity: 0.8, fontSize: "16px" }}>
+          Contact
+        </Text>
+      </div>
+    </div>
+  );
+
   const studentMenu = (
     <Menu
       items={[
@@ -237,14 +262,14 @@ const HomePage = () => {
         background: "linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%)",
       }}
     >
-      {/* Enhanced Header - EXACTLY AS BEFORE */}
+      {/* Responsive Header */}
       <Header
         style={{
           background: scrolled 
             ? 'rgba(255, 255, 255, 0.95)' 
             : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%)',
-          padding: "0 50px",
-          height: "80px",
+          padding: isMobile ? "0 15px" : "0 50px",
+          height: isMobile ? "60px" : "80px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -265,134 +290,166 @@ const HomePage = () => {
             src={logo}
             alt="School Logo"
             style={{
-              width: 180,
+              width: isMobile ? 120 : 180,
               filter: scrolled ? "none" : "drop-shadow(0 2px 8px rgba(0,0,0,0.1))",
             }}
           />
         </div>
 
-        {/* Navigation Links - EXACTLY AS BEFORE */}
-        <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>
-          <Dropdown overlay={studentMenu} placement="bottomLeft" trigger={["click"]}>
+        {/* Desktop Navigation - Hidden on mobile */}
+        {!isMobile && (
+          <div style={{ display: "flex", gap: "30px", alignItems: "center" }}>
+            <Dropdown overlay={studentMenu} placement="bottomLeft" trigger={["click"]}>
+              <Text
+                style={{
+                  color: scrolled ? "#C1272D" : "#C1272D",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  marginRight: "30px",
+                  fontSize: "14px"
+                }}
+              >
+                View Student Info <DownOutlined style={{ fontSize: 12 }} />
+              </Text>
+            </Dropdown>
+
             <Text
-              style={{
-                color: scrolled ? "#C1272D" : "#C1272D",
+              strong
+              style={{ 
+                color: scrolled ? "#1C2951" : "#1C2951", 
                 cursor: "pointer",
-                fontWeight: 600,
-                marginRight: "50px",
-                fontSize: "15px"
+                fontSize: "14px"
               }}
+              onClick={() => navigate("/")}
             >
-              View Student Info <DownOutlined style={{ fontSize: 12 }} />
+              Home
             </Text>
-          </Dropdown>
 
-          <Text
-            strong
-            style={{ 
+            <Text style={{ 
               color: scrolled ? "#1C2951" : "#1C2951", 
-              cursor: "pointer",
-              fontSize: "15px"
-            }}
-            onClick={() => navigate("/")}
-          >
-            Home
-          </Text>
+              cursor: "pointer", 
+              opacity: 0.8,
+              fontSize: "14px"
+            }}>
+              About
+            </Text>
+            <Text style={{ 
+              color: scrolled ? "#1C2951" : "#1C2951", 
+              cursor: "pointer", 
+              opacity: 0.8,
+              fontSize: "14px"
+            }}>
+              Event
+            </Text>
+            <Text style={{ 
+              color: scrolled ? "#1C2951" : "#1C2951", 
+              cursor: "pointer", 
+              opacity: 0.8,
+              fontSize: "14px"
+            }}>
+              Contact
+            </Text>
+          </div>
+        )}
 
-          <Text style={{ 
-            color: scrolled ? "#1C2951" : "#1C2951", 
-            cursor: "pointer", 
-            opacity: 0.8,
-            fontSize: "15px"
-          }}>
-            About
-          </Text>
-          <Text style={{ 
-            color: scrolled ? "#1C2951" : "#1C2951", 
-            cursor: "pointer", 
-            opacity: 0.8,
-            fontSize: "15px"
-          }}>
-            Event
-          </Text>
-          <Text style={{ 
-            color: scrolled ? "#1C2951" : "#1C2951", 
-            cursor: "pointer", 
-            opacity: 0.8,
-            fontSize: "15px"
-          }}>
-            Contact
-          </Text>
-        </div>
-
-        {/* Sign Up Button - ONLY CHANGED THE DROPDOWN CONTENT */}
-        {user ? (
-          <Dropdown overlay={getUserMenu()} trigger={["click"]}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-                padding: "10px 15px",
-                background: "#f5f5f5",
-                borderRadius: 30,
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+        {/* Right Section - User or Sign Up */}
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          {/* Mobile Menu Button - Visible only on mobile */}
+          {isMobile && (
+            <Button
+              type="text"
+              icon={<MenuOutlined />}
+              onClick={() => setMobileMenuVisible(true)}
+              style={{ 
+                fontSize: '18px',
+                color: '#1C2951'
               }}
-            >
+            />
+          )}
+
+          {user ? (
+            <Dropdown overlay={getUserMenu()} trigger={["click"]}>
               <div
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg,#1C2951,#C1272D)",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  color: "#fff",
-                  fontWeight: 700,
-                  marginRight: 10
+                  cursor: "pointer",
+                  padding: isMobile ? "6px 10px" : "8px 15px",
+                  background: "#f5f5f5",
+                  borderRadius: 30,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}
               >
-                {user?.name?.charAt(0)}
-              </div>
+                <div
+                  style={{
+                    width: isMobile ? 32 : 40,
+                    height: isMobile ? 32 : 40,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg,#1C2951,#C1272D)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontWeight: 700,
+                    marginRight: isMobile ? 6 : 10,
+                    fontSize: isMobile ? '12px' : '14px'
+                  }}
+                >
+                  {user?.name?.charAt(0)}
+                </div>
 
-              <span
-                style={{
-                  fontWeight: 600,
-                  fontSize: 15,
-                  color: "#1c5130ff"
-                }}
-              >
-                Hi, {user?.name.split(" ")[0]}!
-              </span>
-            </div>
-          </Dropdown>
-        ) : (
-          <Button
-            onClick={() => navigate("/register")}
-            type="primary"
-            size="large"
-            icon={<UserOutlined />}
-            style={{
-              background: "#C1272D",
-              borderColor: "#C1272D",
-              borderRadius: "25px",
-              padding: "0 30px",
-              height: "45px",
-              fontWeight: 600,
-              boxShadow: "0 4px 12px rgba(193, 39, 45, 0.3)",
-            }}
-          >
-            Sign Up
-          </Button>
-        )}
+                {!isMobile && (
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: "#1c5130ff",
+                    }}
+                  >
+                    Hi, {user?.name.split(" ")[0]}!
+                  </span>
+                )}
+              </div>
+            </Dropdown>
+          ) : (
+            <Button
+              onClick={() => navigate("/register")}
+              type="primary"
+              size={isMobile ? "middle" : "large"}
+              icon={!isMobile && <UserOutlined />}
+              style={{
+                background: "#C1272D",
+                borderColor: "#C1272D",
+                borderRadius: "25px",
+                padding: isMobile ? "0 15px" : "0 30px",
+                height: isMobile ? "35px" : "45px",
+                fontWeight: 600,
+                boxShadow: "0 4px 12px rgba(193, 39, 45, 0.3)",
+                fontSize: isMobile ? '12px' : '14px'
+              }}
+            >
+              {isMobile ? "Sign Up" : "Sign Up"}
+            </Button>
+          )}
+        </div>
       </Header>
 
-      {/* ALL YOUR EXISTING CONTENT BELOW - EXACTLY THE SAME */}
-      <Content style={{ padding: '0', marginTop: '80px' }}>
+      {/* Mobile Menu Drawer */}
+      <Drawer
+        title="Menu"
+        placement="right"
+        onClose={() => setMobileMenuVisible(false)}
+        open={mobileMenuVisible}
+        width={280}
+      >
+        <MobileMenu />
+      </Drawer>
+
+      {/* Responsive Content */}
+      <Content style={{ padding: '0', marginTop: isMobile ? '60px' : '80px' }}>
         {/* Hero Section with Slider */}
         <div style={{ 
-          height: 'calc(100vh - 80px)', 
+          height: isMobile ? '70vh' : 'calc(100vh - 80px)', 
           position: 'relative',
           overflow: 'hidden'
         }}>
@@ -416,21 +473,22 @@ const HomePage = () => {
                 textAlign: 'center',
                 opacity: index === currentSlide ? 1 : 0,
                 transition: 'opacity 1s ease-in-out',
-                padding: '0 50px'
+                padding: isMobile ? '0 20px' : '0 50px'
               }}
             >
               <div style={{ 
                 position: 'relative', 
                 zIndex: 2, 
                 maxWidth: '800px',
-                color: 'white'
+                color: 'white',
+                width: '100%'
               }}>
                 <Title 
                   level={1} 
                   style={{ 
                     color: 'white', 
-                    fontSize: '4rem', 
-                    marginBottom: '20px',
+                    fontSize: isMobile ? '2rem' : '4rem', 
+                    marginBottom: isMobile ? '15px' : '20px',
                     fontWeight: 800,
                     lineHeight: 1.1,
                     textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
@@ -441,49 +499,55 @@ const HomePage = () => {
                 
                 <Text style={{ 
                   color: 'white', 
-                  fontSize: '1.5rem', 
+                  fontSize: isMobile ? '1rem' : '1.5rem', 
                   opacity: 0.9,
                   lineHeight: 1.6,
                   display: 'block',
-                  marginBottom: '40px',
+                  marginBottom: isMobile ? '25px' : '40px',
                   textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
                 }}>
                   {slide.subtitle}
                 </Text>
 
-                <Space size="large" style={{ marginTop: '40px' }}>
+                <Space 
+                  size="large" 
+                  style={{ marginTop: isMobile ? '20px' : '40px' }} 
+                  direction={isMobile ? "vertical" : "horizontal"}
+                >
                   <Button 
                     type="primary" 
-                    size="large"
+                    size={isMobile ? "middle" : "large"}
                     onClick={() => navigate('/register')}
                     style={{ 
                       background: slide.buttonColor, 
                       borderColor: slide.buttonColor,
                       borderRadius: '25px',
-                      padding: '0 40px',
-                      height: '50px',
-                      fontSize: '16px',
+                      padding: isMobile ? '0 25px' : '0 40px',
+                      height: isMobile ? '40px' : '50px',
+                      fontSize: isMobile ? '14px' : '16px',
                       fontWeight: 600,
-                      boxShadow: '0 6px 20px rgba(0, 0, 0, 0.3)'
+                      boxShadow: '0 6px 20px rgba(0, 0, 0, 0.3)',
+                      width: isMobile ? '200px' : 'auto'
                     }}
-                    icon={<ArrowRightOutlined />}
+                    icon={!isMobile && <ArrowRightOutlined />}
                   >
                     {slide.buttonText}
                   </Button>
                   
                   <Button 
-                    size="large"
+                    size={isMobile ? "middle" : "large"}
                     style={{ 
                       background: 'transparent', 
                       borderColor: 'white',
                       color: 'white',
                       borderRadius: '25px',
-                      padding: '0 40px',
-                      height: '50px',
-                      fontSize: '16px',
-                      fontWeight: 600
+                      padding: isMobile ? '0 25px' : '0 40px',
+                      height: isMobile ? '40px' : '50px',
+                      fontSize: isMobile ? '14px' : '16px',
+                      fontWeight: 600,
+                      width: isMobile ? '200px' : 'auto'
                     }}
-                    icon={<PlayCircleOutlined />}
+                    icon={!isMobile && <PlayCircleOutlined />}
                   >
                     Read More
                   </Button>
@@ -503,65 +567,69 @@ const HomePage = () => {
             </div>
           ))}
 
-          {/* Navigation Arrows */}
-          <Button
-            onClick={prevSlide}
-            style={{
-              position: 'absolute',
-              left: '30px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: 'none',
-              color: 'white',
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              zIndex: 3,
-              backdropFilter: 'blur(10px)',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ‹
-          </Button>
-          
-          <Button
-            onClick={nextSlide}
-            style={{
-              position: 'absolute',
-              right: '30px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: 'none',
-              color: 'white',
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              zIndex: 3,
-              backdropFilter: 'blur(10px)',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ›
-          </Button>
+          {/* Navigation Arrows - Hidden on mobile */}
+          {!isMobile && (
+            <>
+              <Button
+                onClick={prevSlide}
+                style={{
+                  position: 'absolute',
+                  left: '30px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  border: 'none',
+                  color: 'white',
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '50%',
+                  zIndex: 3,
+                  backdropFilter: 'blur(10px)',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                ‹
+              </Button>
+              
+              <Button
+                onClick={nextSlide}
+                style={{
+                  position: 'absolute',
+                  right: '30px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  border: 'none',
+                  color: 'white',
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '50%',
+                  zIndex: 3,
+                  backdropFilter: 'blur(10px)',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                ›
+              </Button>
+            </>
+          )}
 
           {/* Slide Indicators */}
           <div style={{
             position: 'absolute',
-            bottom: '30px',
+            bottom: isMobile ? '15px' : '30px',
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
-            gap: '10px',
+            gap: '8px',
             zIndex: 3
           }}>
             {slides.map((_, index) => (
@@ -569,8 +637,8 @@ const HomePage = () => {
                 key={index}
                 onClick={() => goToSlide(index)}
                 style={{
-                  width: '12px',
-                  height: '12px',
+                  width: isMobile ? '8px' : '12px',
+                  height: isMobile ? '8px' : '12px',
                   borderRadius: '50%',
                   border: 'none',
                   background: index === currentSlide ? '#C1272D' : 'rgba(255, 255, 255, 0.5)',
@@ -582,32 +650,39 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Features Section - EXACTLY AS BEFORE */}
-        <div style={{ margin: '100px 50px' }}>
-          <Row gutter={[60, 60]} justify="center">
+        {/* Features Section */}
+        <div style={{ margin: isMobile ? '40px 20px' : '100px 50px' }}>
+          <Row gutter={[30, 30]} justify="center">
             <Col xs={24}>
-              <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                <Title level={2} style={{ color: '#1C2951', marginBottom: '20px' }}>
+              <div style={{ textAlign: 'center', marginBottom: isMobile ? '30px' : '60px' }}>
+                <Title level={2} style={{ color: '#1C2951', marginBottom: '20px', fontSize: isMobile ? '1.5rem' : '2rem' }}>
                   Why Cordova Academy Stands Out
                 </Title>
-                <Text style={{ color: '#1C2951', opacity: 0.8, fontSize: '18px', maxWidth: '600px', margin: '0 auto' }}>
+                <Text style={{ 
+                  color: '#1C2951', 
+                  opacity: 0.8, 
+                  fontSize: isMobile ? '14px' : '18px', 
+                  maxWidth: '600px', 
+                  margin: '0 auto',
+                  lineHeight: 1.6 
+                }}>
                   Discover what makes our educational approach different and how we're shaping the future of learning
                 </Text>
-                <div >
+                <div>
                  <Button
                   onClick={() => navigate("/about")}
                   type="primary"
-                  size="large"
+                  size={isMobile ? "middle" : "large"}
                   style={{
                     background: "#C1272D",
                     borderColor: "#C1272D",
                     borderRadius: "25px",
-                    padding: "0 30px",
-                    height: "45px",
+                    padding: isMobile ? "0 20px" : "0 30px",
+                    height: isMobile ? "38px" : "45px",
                     fontWeight: 600,
                     boxShadow: "0 4px 12px rgba(193, 39, 45, 0.3)",
-                    marginTop:'30px'
-                    
+                    marginTop: '30px',
+                    fontSize: isMobile ? '13px' : '16px'
                   }}
                 >
                  Discover
@@ -620,87 +695,87 @@ const HomePage = () => {
           {/* Interactive Learning Journey */}
           <div style={{ 
             background: 'linear-gradient(135deg, rgba(28, 41, 81, 0.03) 0%, rgba(193, 39, 45, 0.03) 100%)',
-            borderRadius: '24px',
-            padding: '60px 40px',
-            marginBottom: '80px',
+            borderRadius: isMobile ? '16px' : '24px',
+            padding: isMobile ? '30px 20px' : '60px 40px',
+            marginBottom: isMobile ? '40px' : '80px',
             border: '1px solid rgba(28, 41, 81, 0.1)'
           }}>
-            <Row gutter={[40, 40]} align="middle">
+            <Row gutter={[30, 30]} align="middle">
               <Col xs={24} lg={12}>
-                <Title level={3} style={{ color: '#1C2951', marginBottom: '30px' }}>
+                <Title level={3} style={{ color: '#1C2951', marginBottom: '25px', fontSize: isMobile ? '1.25rem' : '1.75rem' }}>
                   Our Learning Ecosystem
                 </Title>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                     <div style={{
-                      width: '50px',
-                      height: '50px',
+                      width: isMobile ? 40 : 50,
+                      height: isMobile ? 40 : 50,
                       background: 'linear-gradient(135deg, #C1272D 0%, #ff6b6b 100%)',
-                      borderRadius: '12px',
+                      borderRadius: isMobile ? '10px' : '12px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: 'white',
-                      fontSize: '20px',
+                      fontSize: isMobile ? '16px' : '20px',
                       flexShrink: 0
                     }}>
                       🎯
                     </div>
                     <div>
-                      <Text strong style={{ color: '#1C2951', fontSize: '18px', display: 'block', marginBottom: '8px' }}>
+                      <Text strong style={{ color: '#1C2951', fontSize: isMobile ? '15px' : '18px', display: 'block', marginBottom: '6px' }}>
                         Personalized Learning Paths
                       </Text>
-                      <Text style={{ color: '#1C2951', opacity: 0.8, lineHeight: 1.6 }}>
+                      <Text style={{ color: '#1C2951', opacity: 0.8, lineHeight: 1.6, fontSize: isMobile ? '13px' : '16px' }}>
                         Every student receives a customized educational journey tailored to their unique strengths, interests, and learning style.
                       </Text>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                     <div style={{
-                      width: '50px',
-                      height: '50px',
+                      width: isMobile ? 40 : 50,
+                      height: isMobile ? 40 : 50,
                       background: 'linear-gradient(135deg, #1C2951 0%, #3498db 100%)',
-                      borderRadius: '12px',
+                      borderRadius: isMobile ? '10px' : '12px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: 'white',
-                      fontSize: '20px',
+                      fontSize: isMobile ? '16px' : '20px',
                       flexShrink: 0
                     }}>
                       🌍
                     </div>
                     <div>
-                      <Text strong style={{ color: '#1C2951', fontSize: '18px', display: 'block', marginBottom: '8px' }}>
+                      <Text strong style={{ color: '#1C2951', fontSize: isMobile ? '15px' : '18px', display: 'block', marginBottom: '6px' }}>
                         Global Classroom Experience
                       </Text>
-                      <Text style={{ color: '#1C2951', opacity: 0.8, lineHeight: 1.6 }}>
+                      <Text style={{ color: '#1C2951', opacity: 0.8, lineHeight: 1.6, fontSize: isMobile ? '13px' : '16px' }}>
                         Connect with students and educators worldwide through our international collaboration programs and virtual exchange initiatives.
                       </Text>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                     <div style={{
-                      width: '50px',
-                      height: '50px',
+                      width: isMobile ? 40 : 50,
+                      height: isMobile ? 40 : 50,
                       background: 'linear-gradient(135deg, #C1272D 0%, #1C2951 100%)',
-                      borderRadius: '12px',
+                      borderRadius: isMobile ? '10px' : '12px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: 'white',
-                      fontSize: '20px',
+                      fontSize: isMobile ? '16px' : '20px',
                       flexShrink: 0
                     }}>
                       💡
                     </div>
                     <div>
-                      <Text strong style={{ color: '#1C2951', fontSize: '18px', display: 'block', marginBottom: '8px' }}>
+                      <Text strong style={{ color: '#1C2951', fontSize: isMobile ? '15px' : '18px', display: 'block', marginBottom: '6px' }}>
                         Innovation Lab & Makerspace
                       </Text>
-                      <Text style={{ color: '#1C2951', opacity: 0.8, lineHeight: 1.6 }}>
+                      <Text style={{ color: '#1C2951', opacity: 0.8, lineHeight: 1.6, fontSize: isMobile ? '13px' : '16px' }}>
                         Hands-on learning in our state-of-the-art innovation lab where students bring ideas to life through technology and creativity.
                       </Text>
                     </div>
@@ -711,43 +786,41 @@ const HomePage = () => {
               <Col xs={24} lg={12}>
                 <div style={{
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  borderRadius: '20px',
-                  padding: '40px',
+                  borderRadius: isMobile ? '16px' : '20px',
+                  padding: isMobile ? '25px 20px' : '40px',
                   color: 'white',
                   textAlign: 'center',
                   boxShadow: '0 20px 40px rgba(102, 126, 234, 0.3)'
                 }}>
-                  <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>
+                  <Title level={3} style={{ color: 'white', marginBottom: '20px', fontSize: isMobile ? '1.1rem' : '1.5rem' }}>
                     Student Success Metrics
                   </Title>
-                  <Row gutter={[20, 20]} style={{ marginBottom: '30px' }}>
-                    <Col xs={10}>
+                  <Row gutter={[15, 15]} style={{ marginBottom: '25px' }}>
+                    <Col xs={12}>
                       <div>
-                        <Title level={2} style={{ color: 'white', margin: 0 }}>95%</Title>
-                        <Text style={{ color: 'rgba(255,255,255,0.9)' }}>Graduation Rate</Text>
+                        <Title level={2} style={{ color: 'white', margin: 0, fontSize: isMobile ? '1.5rem' : '2rem' }}>95%</Title>
+                        <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: isMobile ? '12px' : '14px' }}>Graduation Rate</Text>
                       </div>
                     </Col>
-                    <Col xs={10}>
+                    <Col xs={12}>
                       <div>
-                        <Title level={2} style={{ color: 'white', margin: 0 }}>100%</Title>
-                        <Text style={{ color: 'rgba(255,255,255,0.9)' }}>University Acceptance</Text>
+                        <Title level={2} style={{ color: 'white', margin: 0, fontSize: isMobile ? '1.5rem' : '2rem' }}>100%</Title>
+                        <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: isMobile ? '12px' : '14px' }}>University Acceptance</Text>
                       </div>
                     </Col>
-                    
                   </Row>
-                  
                 </div>
               </Col>
             </Row>
           </div>
         </div>
 
-        {/* Interactive CTA Section - EXACTLY AS BEFORE */}
+        {/* Interactive CTA Section */}
         <div style={{ 
           background: 'linear-gradient(135deg, #1C2951 0%, #2c3e6e 100%)',
-          borderRadius: '30px',
-          padding: '80px 50px',
-          margin: '0 50px 60px',
+          borderRadius: isMobile ? '20px' : '30px',
+          padding: isMobile ? '40px 20px' : '80px 50px',
+          margin: isMobile ? '0 20px 40px' : '0 50px 60px',
           color: 'white',
           textAlign: 'center',
           position: 'relative',
@@ -756,32 +829,32 @@ const HomePage = () => {
           {/* Background Elements */}
           <div style={{
             position: 'absolute',
-            top: '-50px',
-            right: '-50px',
-            width: '200px',
-            height: '200px',
+            top: isMobile ? '-20px' : '-50px',
+            right: isMobile ? '-20px' : '-50px',
+            width: isMobile ? '100px' : '200px',
+            height: isMobile ? '100px' : '200px',
             background: 'rgba(255,255,255,0.05)',
             borderRadius: '50%'
           }}></div>
           <div style={{
             position: 'absolute',
-            bottom: '-30px',
-            left: '-30px',
-            width: '150px',
-            height: '150px',
+            bottom: isMobile ? '-15px' : '-30px',
+            left: isMobile ? '-15px' : '-30px',
+            width: isMobile ? '80px' : '150px',
+            height: isMobile ? '80px' : '150px',
             background: 'rgba(193, 39, 45, 0.1)',
             borderRadius: '50%'
           }}></div>
 
           <div style={{ position: 'relative', zIndex: 2 }}>
-            <Title level={2} style={{ color: 'white', marginBottom: '20px' }}>
+            <Title level={2} style={{ color: 'white', marginBottom: '15px', fontSize: isMobile ? '1.25rem' : '2rem' }}>
               Ready to Join Our Innovative Learning Community?
             </Title>
             <Text style={{ 
               color: 'rgba(255,255,255,0.9)', 
-              fontSize: '18px', 
+              fontSize: isMobile ? '14px' : '18px', 
               display: 'block', 
-              marginBottom: '40px',
+              marginBottom: isMobile ? '25px' : '40px',
               maxWidth: '600px',
               margin: '0 auto',
               lineHeight: 1.6
@@ -790,40 +863,46 @@ const HomePage = () => {
               Your journey to extraordinary education starts here.
             </Text>
             
-            <Space size="large" style={{ marginBottom: '30px' }}>
+            <Space 
+              size="large" 
+              style={{ marginBottom: '20px' }} 
+              direction={isMobile ? "vertical" : "horizontal"}
+            >
               <Button 
                 type="primary" 
-                size="large"
+                size={isMobile ? "middle" : "large"}
                 onClick={() => navigate('/register')}
                 style={{ 
                   background: '#C1272D', 
                   borderColor: '#C1272D',
                   borderRadius: '25px',
-                  padding: '0 40px',
-                  height: '55px',
-                  fontSize: '16px',
+                  padding: isMobile ? '0 25px' : '0 40px',
+                  height: isMobile ? '40px' : '55px',
+                  fontSize: isMobile ? '14px' : '16px',
                   fontWeight: 600,
-                  boxShadow: '0 8px 25px rgba(193, 39, 45, 0.4)'
+                  boxShadow: '0 8px 25px rgba(193, 39, 45, 0.4)',
+                  width: isMobile ? '200px' : 'auto'
                 }}
-                icon={<ArrowRightOutlined />}
+                icon={!isMobile && <ArrowRightOutlined />}
               >
                 Start Your Journey
               </Button>
               
               <Button 
-                size="large"
+                size={isMobile ? "middle" : "large"}
                 style={{ 
                   background: 'rgba(255,255,255,0.1)', 
                   borderColor: 'rgba(255,255,255,0.3)',
                   color: 'white',
                   borderRadius: '25px',
-                  padding: '0 40px',
-                  height: '55px',
-                  fontSize: '16px',
+                  padding: isMobile ? '0 25px' : '0 40px',
+                  height: isMobile ? '40px' : '55px',
+                  fontSize: isMobile ? '14px' : '16px',
                   fontWeight: 600,
-                  backdropFilter: 'blur(10px)'
+                  backdropFilter: 'blur(10px)',
+                  width: isMobile ? '200px' : 'auto'
                 }}
-                icon={<PlayCircleOutlined />}
+                icon={!isMobile && <PlayCircleOutlined />}
               >
                 Virtual Campus Tour
               </Button>

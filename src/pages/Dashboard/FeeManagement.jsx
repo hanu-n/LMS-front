@@ -23,11 +23,8 @@ import {
   TeamOutlined,
   UserOutlined,
   DollarOutlined,
-  PlusOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
-  CalendarOutlined,
-  SearchOutlined,
   SaveOutlined
 } from "@ant-design/icons";
 
@@ -330,6 +327,15 @@ const openFeeModal = async (student) => {
                 <Option value="1">Grade 1</Option>
                 <Option value="2">Grade 2</Option>
                 <Option value="3">Grade 3</Option>
+                <Option value="4">Grade 4</Option>
+                <Option value="5">Grade 5</Option>
+                <Option value="6">Grade 6</Option>
+                <Option value="7">Grade 7</Option>
+                <Option value="8">Grade 8</Option>
+                <Option value="9">Grade 9</Option>
+                <Option value="10">Grade 10</Option>
+                <Option value="11">Grade 11</Option>
+                <Option value="12">Grade 12</Option>
               </Select>
             </div>
           </Col>
@@ -348,6 +354,14 @@ const openFeeModal = async (student) => {
                 <Option value="A">Section A</Option>
                 <Option value="B">Section B</Option>
                 <Option value="C">Section C</Option>
+                <Option value="D">Section D</Option>
+                <Option value="E">Section E</Option>
+                <Option value="F">Section F</Option>
+                <Option value="G">Section G</Option>
+                <Option value="H">Section H</Option>
+                <Option value="I">Section I</Option>
+                <Option value="J">Section J</Option>
+                <Option value="K">Section K</Option>
               </Select>
             </div>
           </Col>

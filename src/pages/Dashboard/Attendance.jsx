@@ -351,71 +351,7 @@ export default function AttendanceMonthly() {
         </div>
       ),
     },
-    // ...days
-    //   .filter((d) => !d.isWeekend)
-    //   .map((d) => ({
-    //     title: (
-    //       <Tooltip title={d.dateISO}>
-    //         <div style={{ 
-    //           textAlign: "center", 
-    //           background: 'linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%)',
-    //           padding: '6px 2px',
-    //           borderRadius: '6px',
-    //           border: '1px solid #bae7ff',
-    //           margin: '2px'
-    //         }}>
-    //           <div style={{ 
-    //             fontSize: '10px', 
-    //             color: '#1890ff',
-    //             lineHeight: 1.2,
-    //             fontWeight: 600
-    //           }}>
-    //             {d.weekdayLabel}
-    //           </div>
-    //           <div style={{ 
-    //             fontSize: '12px', 
-    //             color: '#1C2951',
-    //             fontWeight: 'bold'
-    //           }}>
-    //             {d.dateISO.split('-')[2]}
-    //           </div>
-    //         </div>
-    //       </Tooltip>
-    //     ),
-    //     key: d.dateISO,
-    //     width: 70,
-    //     align: "center",
-    //     render: (_, record) => {
-    //       const status = getStatus(record._id, d.dateISO);
-    //       return (
-    //         <Select
-    //           value={status || undefined}
-    //           onChange={(newStatus) => handleStatusChange(record._id, d.dateISO, newStatus)}
-    //           placeholder="-"
-    //           style={{ 
-    //             width: 60,
-    //             background: status ? `${getStatusColor(status)}15` : 'white',
-    //             border: `2px solid ${status ? getStatusColor(status) : '#e8e8e8'}`,
-    //             borderRadius: '8px',
-    //             fontWeight: 600
-    //           }}
-    //           size="small"
-    //           suffixIcon={getStatusIcon(status)}
-    //         >
-    //           <Option value="Present">
-    //             <span style={{ color: '#52c41a', fontWeight: 600 }}>P</span>
-    //           </Option>
-    //           <Option value="Absent">
-    //             <span style={{ color: '#ff4d4f', fontWeight: 600 }}>A</span>
-    //           </Option>
-    //           <Option value="Permission">
-    //             <span style={{ color: '#faad14', fontWeight: 600 }}>Perm</span>
-    //           </Option>
-    //         </Select>
-    //       );
-    //     },
-    //   })),
-    // Alternative: Fixed Select version (if you prefer dropdowns)
+    
 ...days
   .filter((d) => !d.isWeekend)
   .map((d) => ({

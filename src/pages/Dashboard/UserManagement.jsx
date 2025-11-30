@@ -478,27 +478,23 @@ const UserManagement = () => {
     },
   ];
 
-  return (
-    <div style={{ padding: 24, background: "#f7fafc", minHeight: "100vh" }}>
-      <Card
-        style={{
-          borderRadius: 12,
-          boxShadow: "0 8px 30px rgba(22,39,81,0.06)",
-          padding: 18,
-        }}
-      >
-        <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-          <Col>
+ return (
+    <div style={{ padding: "16px", background: "#f7fafc", minHeight: "100vh" }}>
+      <Card style={{ borderRadius: 12, boxShadow: "0 8px 30px rgba(22,39,81,0.06)" }}>
+        {/* Header - Stack on mobile, row on desktop */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 16 }}>
+          <div>
             <Title level={4} style={{ margin: 0, color: "#1C2951" }}>
               Users Management
             </Title>
             <div style={{ color: "#666", marginTop: 6 }}>
               Manage system users, roles, and permissions
             </div>
-          </Col>
+          </div>
 
-          <Col>
-            <Space>
+          {/* Actions - Stack on mobile, row on desktop */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <Button
                 icon={<ReloadOutlined />}
                 onClick={fetchUsers}
@@ -513,14 +509,14 @@ const UserManagement = () => {
                 prefix={<SearchOutlined />}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                style={{ width: 300 }}
+                style={{ flex: 1, minWidth: 200 }}
                 allowClear
               />
 
               <Select
                 value={roleFilter}
                 onChange={(val) => setRoleFilter(val)}
-                style={{ width: 160 }}
+                style={{ width: 140 }}
                 placeholder="Filter by role"
               >
                 <Option value="all">All Roles</Option>
@@ -536,9 +532,9 @@ const UserManagement = () => {
               >
                 Add User
               </Button>
-            </Space>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
 
         {error && (
           <Alert
@@ -552,27 +548,28 @@ const UserManagement = () => {
           />
         )}
 
-        <Table
-          dataSource={filteredUsers}
-          columns={columns}
-          rowKey={(record) => record._id || record.id || Math.random()}
-          loading={loading || actionLoading}
-          pagination={{ 
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) => 
-              `${range[0]}-${range[1]} of ${total} users`
-          }}
-          bordered
-          style={{ borderRadius: 10, overflow: "hidden" }}
-          locale={{
-            emptyText: loading ? "Loading users..." : "No users found"
-          }}
-        />
+        {/* Table with horizontal scroll on mobile */}
+        <div style={{ overflowX: "auto" }}>
+          <Table
+            dataSource={filteredUsers}
+            columns={columns}
+            rowKey={(record) => record._id || record.id || Math.random()}
+            loading={loading || actionLoading}
+            pagination={{ 
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) => 
+                `${range[0]}-${range[1]} of ${total} users`
+            }}
+            bordered
+            style={{ minWidth: 800 }} // Ensures table doesn't get too small
+            scroll={{ x: 800 }} // Horizontal scroll on mobile
+          />
+        </div>
       </Card>
 
-      {/* Add User Modal */}
+      {/* Modals - Responsive width */}
       <Modal
         title="Add New User"
         open={isAddOpen}
@@ -584,11 +581,12 @@ const UserManagement = () => {
         okText="Create User"
         cancelText="Cancel"
         confirmLoading={actionLoading}
-        width={600}
+        width="90%" // Responsive width
+        style={{ maxWidth: 600 }} // But not too wide on desktop
       >
         <Form form={formAdd} layout="vertical">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="name"
                 label="Full Name"
@@ -597,7 +595,7 @@ const UserManagement = () => {
                 <Input placeholder="Enter full name" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="age"
                 label="Age"
@@ -630,7 +628,7 @@ const UserManagement = () => {
           </Form.Item>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item 
                 name="role" 
                 label="Role" 
@@ -643,7 +641,7 @@ const UserManagement = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item name="gradeLevel" label="Grade Level">
                 <Select placeholder="Select grade level" allowClear>
                   <Option value="Grade 9">Grade 9</Option>
@@ -657,7 +655,7 @@ const UserManagement = () => {
         </Form>
       </Modal>
 
-      {/* Edit User Modal */}
+      {/* Edit Modal */}
       <Modal
         title={`Edit User - ${editingUser?.name || ''}`}
         open={isEditOpen}
@@ -670,11 +668,12 @@ const UserManagement = () => {
         okText="Save Changes"
         cancelText="Cancel"
         confirmLoading={actionLoading}
-        width={600}
+        width="90%"
+        style={{ maxWidth: 600 }}
       >
         <Form form={formEdit} layout="vertical">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="name"
                 label="Full Name"
@@ -683,7 +682,7 @@ const UserManagement = () => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="age"
                 label="Age"
@@ -705,7 +704,7 @@ const UserManagement = () => {
           </Form.Item>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item name="gradeLevel" label="Grade Level">
                 <Select placeholder="Select grade level" allowClear>
                   <Option value="Grade 9">Grade 9</Option>
@@ -715,7 +714,7 @@ const UserManagement = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item name="isApproved" label="Approval Status" valuePropName="checked">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Switch />
@@ -728,6 +727,8 @@ const UserManagement = () => {
       </Modal>
     </div>
   );
+
+ 
 };
 
 export default UserManagement;
