@@ -35,14 +35,14 @@ const ContactPage = () => {
     {
       icon: <EnvironmentOutlined style={{ fontSize: '24px', color: brandColors.primary }} />,
       title: '📍 Address',
-      content: 'Addis Ababa, Ethiopia',
-      description: 'Visit our campus anytime'
+      content: 'Addis Ababa---Kera and Jemo2',
+      description: 'Visit our school anytime'
     },
     {
       icon: <PhoneOutlined style={{ fontSize: '24px', color: brandColors.primary }} />,
       title: '📞 Phone',
       content: '+251 900 00 0000',
-      description: 'Mon-Fri from 8am to 5pm'
+      description: 'Mon-Fri from 2pm to 11am(local-time)       saturday from 2pm to 6:30pm L-T'
     },
     {
       icon: <MailOutlined style={{ fontSize: '24px', color: brandColors.primary }} />,
@@ -338,7 +338,7 @@ const ContactPage = () => {
                     Find Us
                   </Title>
                   <Text style={{ color: '#666', fontSize: '16px' }}>
-                    Visit our campus in Addis Ababa
+                    Visit our school Kera/Jemo2
                   </Text>
                 </div>
 
@@ -370,8 +370,7 @@ const ContactPage = () => {
                     📍 Campus Location
                   </Title>
                   <Text style={{ color: brandColors.text, fontSize: '14px' }}>
-                    Our main campus is located in the heart of Addis Ababa, easily accessible 
-                    from all major transportation routes. Ample parking available.
+                    Our School has 3 branches ;2 elemntary and 1 highschool located around kera  and jemo-2 for more info contact us.
                   </Text>
                 </div>
               </Card>

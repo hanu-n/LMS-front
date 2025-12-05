@@ -384,9 +384,8 @@ const AboutPage = () => {
             {[
               { icon: '🏆', value: '98%', label: 'Graduation Rate' },
               { icon: '👨‍🏫', value: '150+', label: 'Expert Educators' },
-              { icon: '🌍', value: '50+', label: 'Countries Represented' },
-              { icon: '⭐', value: '200+', label: 'National Awards' }
-            ].map((stat, index) => (
+              { icon: '🌍', value: 'In Ethiopia', label: 'Pride of ethiopia' }
+                 ].map((stat, index) => (
               <Col xs={12} md={6} key={index}>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ 

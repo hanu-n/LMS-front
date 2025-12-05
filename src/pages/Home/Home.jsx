@@ -287,6 +287,7 @@ const HomePage = () => {
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <img
+          onClick={()=>navigate('/')}
             src={logo}
             alt="School Logo"
             style={{
@@ -535,6 +536,7 @@ const HomePage = () => {
                   </Button>
                   
                   <Button 
+                  onClick={()=>navigate('/about')}
                     size={isMobile ? "middle" : "large"}
                     style={{ 
                       background: 'transparent', 

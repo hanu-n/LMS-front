@@ -152,12 +152,10 @@ const AppFooter = () => {
         <Col xs={24} sm={8} md={4}>
           <Title level={4} style={{ color: 'white', marginBottom: '20px' }}>Quick Links</Title>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="#">Home</Link>
-            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="#">About Us</Link>
-            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="#">Academic Programs</Link>
-            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="#">Admissions</Link>
-            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="#">Faculty</Link>
-            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="#">News & Events</Link>
+            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="/home">Home</Link>
+            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="/about">About Us</Link>
+            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="/events">Academic Programs</Link>
+            <Link style={{ color: 'rgba(255,255,255,0.8)' }} href="/events">Events</Link>
           </div>
         </Col>
 
@@ -183,12 +181,12 @@ const AppFooter = () => {
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
               <EnvironmentOutlined style={{ color: '#C1272D', marginRight: '10px' }} />
               <Text style={{ color: 'rgba(255,255,255,0.8)' }}>
-                123 Education Lane, Academic City, AC 12345
+               Kera / Jemo2
               </Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
               <PhoneOutlined style={{ color: '#C1272D', marginRight: '10px' }} />
-              <Text style={{ color: 'rgba(255,255,255,0.8)' }}>+1 (555) 123-4567</Text>
+              <Text style={{ color: 'rgba(255,255,255,0.8)' }}>+2519 01002300</Text>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <MailOutlined style={{ color: '#C1272D', marginRight: '10px' }} />
@@ -199,7 +197,7 @@ const AppFooter = () => {
           {/* Newsletter Subscription */}
           <div>
             <Text strong style={{ color: 'white', display: 'block', marginBottom: '10px' }}>
-              Subscribe to our newsletter
+              Contact with our staff members
             </Text>
             <Space.Compact style={{ width: '100%' }}>
               <Input 
@@ -220,7 +218,7 @@ const AppFooter = () => {
                 }}
                 icon={<ArrowRightOutlined />}
               >
-                Subscribe
+                Contact
               </Button>
             </Space.Compact>
           </div>
